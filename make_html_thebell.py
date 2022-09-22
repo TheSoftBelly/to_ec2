@@ -1,6 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 
+
+
+
+
 BASE_URL = 'https://www.thebell.co.kr/free/content/article.asp?page=1&svccode=00'
 res = requests.get(BASE_URL)
 soup= BeautifulSoup(res.text , 'html.parser')
@@ -74,7 +78,7 @@ main_content_div=''
 main_content_div_list=[] 
 #html로 바꾸기
 for asideBox_num_for_ul in range(len(asideBox_hrefs)):
-    asideBox_ul = asideBox_ul+'''<p style="font-size: 11px; font-family: Ubuntu, Helvetica, Arial;padding-top: 5px;"><a href='{asideBox_href}' style='color: black;text-decoration: none;'><span style="font-size: 16px;">{rank}. {asideBox_all_title}</span><button style="-webkit-transform: translateX(-9%) translateY(-25%) rotate(45deg)">더보기</button></a></p>'''.format(asideBox_href=asideBox_hrefs[asideBox_num_for_ul],asideBox_all_title=asideBox_all_titles[asideBox_num_for_ul],rank=asideBox_num_for_ul+1)
+    asideBox_ul = asideBox_ul+'''<p style="font-size: 11px; font-family: Ubuntu, Helvetica, Arial;padding-top: 5px;"><a href='{asideBox_href}' style='color: black;'><span style="font-size: 16px;">{rank}. {asideBox_all_title}</span></a></p>'''.format(asideBox_href=asideBox_hrefs[asideBox_num_for_ul],asideBox_all_title=asideBox_all_titles[asideBox_num_for_ul],rank=asideBox_num_for_ul+1)
 
 for main_num in range(len(main_texts_titles_list)):
     main_content_div_list.append(main_content_div+'''<div class="mj-column-per-50 outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:50%;">
@@ -552,7 +556,7 @@ def mail_form(send_who):
     SMTP_SEVER = 'smtp.naver.com'
     SMTP_PORT = 465
     SMTP_USER = 'jjoon1024@naver.com'
-    SMTP_PASSWORD = open('./email_config.txt','r').readline().rstrip()
+    SMTP_PASSWORD = open('/home/ubuntu/workspace/to_ec2/email_config.txt','r').readline().rstrip()
 
     from email.mime.multipart import MIMEMultipart 
     from email.mime.text import MIMEText
@@ -568,7 +572,7 @@ def mail_form(send_who):
 
     msg['From'] = SMTP_USER 
     msg['To'] = '내가 사랑하고 나를 사랑하는 모두에게'
-    msg['Subject'] = 'Paper Round .made_by_HyoJoon'
+    msg['Subject'] = 'NEWSBOY .made_by_HyoJoon'
 
     text = MIMEText(contents,'html')
 
@@ -581,7 +585,7 @@ def mail_form(send_who):
         print('메일 서버 접속 성공')
         smtp.login(SMTP_USER, SMTP_PASSWORD)
         print('로그인 성공')
-        smtp.sendmail(SMTP_USER,send_who.split(',') , msg.as_string())
+        smtp.sendmail(SMTP_USER,send_who , msg.as_string())
         print('이메일 발송 성공!')
 
 
@@ -592,6 +596,9 @@ def mail_form(send_who):
         smtp.close()
         print('파이널리')
 
-mail_form(input('메일 주소를 입력해주세요. 만약에 보내는 곳이 한 곳 이상이면 ex)메일, 메일, 메일 형태로 작성해주세요!:'))
+file = open("/home/ubuntu/workspace/to_ec2/email_list.txt", "r")
+strings = file.readlines()
+file.close()
 
+mail_form(strings)
 
